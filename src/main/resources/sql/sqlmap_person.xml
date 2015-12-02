@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ng.dao.PersonDao">
+    
+    <resultMap id="PERSON_RESULT_MAP" type="Person">
+		<result property="id" column="ID" />
+		<result property="firstName" column="FIRST_NAME" />
+		<result property="lastName" column="LAST_NAME" />
+	</resultMap>
+	
+	<sql id="PERSON_DO_QUERY_COLUMNS">
+		A1.ID 			id, 
+		A1.FIRST_NAME 	firstName, 
+		A1.LAST_NAME 	lastName
+	</sql>
+
+	<sql id="PERSONDO_QUERY_PARAMS">
+		<where>
+			<if test="id != null">ID = #{id,jdbcType=INTEGER}</if>
+			<if test="firstName != null">AND FIRST_NAME = #{firstName,jdbcType=VARCHAR}</if>
+			<if test="lastName != null">AND LAST_NAME = #{lastName,jdbcType=VARCHAR}</if>
+		</where>
+	</sql>
+	
+    <insert id="insertPerson" parameterType="Person">
+		INSERT INTO NG_PERSON(
+			FIRST_NAME, 
+			LAST_NAME
+		) VALUES (
+		 	#{firstName,jdbcType=VARCHAR},
+		 	#{lastName,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<select id="findPersons" parameterType="Person" resultMap="PERSON_RESULT_MAP">
+		SELECT
+		<include refid="PERSON_DO_QUERY_COLUMNS" />
+		<![CDATA[  
+	     	FROM NG_PERSON A1
+	    ]]>
+		ORDER BY A1.FIRST_NAME ASC
+	</select>
+</mapper>
